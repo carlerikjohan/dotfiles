@@ -1,0 +1,37 @@
+version: "3"
+
+tasks:
+  setup-filevault:
+    status:
+      - test "$(sudo fdesetup status)" = "FileVault is On."
+    cmds:
+      - sudo fdesetup enable
+
+  configure-firewall:
+    deps:
+      - enable-firewall-logging
+      - enable-firewall-stealth-mode
+
+  enable-firewall:
+    status:
+      - test "$(sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate)" = "Firewall is enabled (state = 1)."
+    cmds:
+      - sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+
+  enable-firewall-logging:
+    deps: [enable-firewall]
+    status:
+      - test "$(sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getloggingmode)" = "Logging mode is on"
+    cmds:
+      - sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
+
+  enable-firewall-stealth-mode:
+    deps: [enable-firewall]
+    status:
+      - test "$(sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode)" = "Stealth mode enabled"
+    cmds:
+      - sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+
+  restart-firewall:
+    cmds:
+      - sudo pkill -HUP socketfilterfw

@@ -1,0 +1,42 @@
+version: "3"
+
+tasks:
+  install:
+    deps:
+      - install-homebrew
+      - turn-off-homebrew-analytics
+      - install-nvm
+
+  install-homebrew:
+    cmds:
+      - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    status:
+      - test -x /opt/homebrew/bin/brew
+  turn-off-homebrew-analytics:
+    deps: [install-homebrew]
+    cmds:
+      - brew analytics off
+    status:
+      - test "$(brew analytics state)" = "Analytics are disabled."
+
+  install-nvm:
+    cmds:
+      - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    status:
+      - test -x ~/.nvm/nvm.sh
+
+  install-node:
+    deps: [install-nvm]
+    cmds:
+      - nvm install --lts
+    status:
+      - test -x ~/.nvm/versions/node/v16.9.1/bin/node
+
+  install-firefox:
+    deps: [install-homebrew]
+    cmds:
+      - brew install --cask firefox
+      # - create a profile
+      # - unzip profile.zip into firefox profile
+    status:
+      - test -x /opt/homebrew/bin/firefox

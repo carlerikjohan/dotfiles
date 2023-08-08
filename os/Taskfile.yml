@@ -1,0 +1,42 @@
+version: "3"
+
+vars:
+  HOSTNAME: "Macbook"
+  USERNAME: "carlerikjohan"
+
+tasks:
+  default:
+    deps:
+      - setup-hostname
+      - setup-settings
+      - setup-ssh
+      - enable-developer-mode
+
+  update-macos:
+    cmds:
+      - softwareupdate --install --all --restart --force
+
+  setup-hostname:
+    status:
+      - test "$(hostname)" = "{{.HOSTNAME}}""
+    cmds:
+      - sudo scutil --set ComputerName "{{.HOSTNAME}}"
+      - sudo scutil --set HostName "{{.HOSTNAME}}""
+      - sudo scutil --set LocalHostName "{{.HOSTNAME}}""
+      - sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "{{.HOSTNAME}}""
+
+  setup-settings:
+    cmds:
+      - sh ./mac_settings.sh
+
+  setup-ssh:
+    status:
+      - test -f ~/.ssh/id_ed25519.pub
+    cmds:
+      - ssh-keygen -o -a 100 -t ed25519 -N '' -f ~/.ssh/id_ed25519
+
+  enable-developer-mode:
+    status:
+      - test "$(/usr/sbin/DevToolsSecurity --status)" = "Developer mode is currently enabled."
+    cmds:
+      - sudo /usr/sbin/DevToolsSecurity --enable

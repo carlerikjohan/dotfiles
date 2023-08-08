@@ -1,0 +1,22 @@
+version: "3"
+
+includes:
+  os: ./os
+
+tasks:
+  default:
+    deps:
+      - install-xcode
+      - install-homebrew
+
+  install-xcode:
+    cmds:
+      - xcode-select --install
+    status:
+      - xcode-select --print-path
+
+  install-nvm:
+    cmds:
+      - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    status:
+      - test -x ~/.nvm/nvm.sh
