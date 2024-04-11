@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+
+# Left side promt
+LAST_COMMAND_OK='%F{green}o'
+LAST_COMMAND_ERROR='%F{red}f'
+LAST_COMMAND_STATUS="%(?.${LAST_COMMAND_OK}.${LAST_COMMAND_ERROR})%f"
+
+CURRENT_DIRECTORY='%F{blue}%~%f'
+
+SUDO_STATUS='%(!.#.>)'
+
+export PROMPT="${LAST_COMMAND_STATUS} ${CURRENT_DIRECTORY} ${SUDO_STATUS} "
+
+# Right side promt
+# export PROMPT='%(?.%F{green}o.%F{red}f) %F{blue}%~%f %(!.#.>) '
+
+autoload -Uz vcs_info
+precmd_vcs_info() { vcs_info }
+precmd_functions+=( precmd_vcs_info )
+setopt PROMPT_SUBST
+
+export RPROMPT="${vcs_info_msg_0_}"
+
+zstyle ':vcs_info:git:*' formats '%b'

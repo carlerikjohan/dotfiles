@@ -1,1 +1,6 @@
 bin
+
+# Make sure no secrets or history is checked in
+config/zsh/.zsh_history
+config/zsh/.zcompdump
+config/zsh/.zsh_sessions/

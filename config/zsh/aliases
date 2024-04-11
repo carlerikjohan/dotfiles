@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Git
+
+alias gs="git status"
+
+# List TODO: check if exa exists
+
+alias l="eza"
+alias la="eza -a"
+alias ll="eza -lah"
+alias ls="eza --color=auto"
