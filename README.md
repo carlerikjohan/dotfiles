@@ -1,1 +1,0 @@
-# carlerikjohan's dotfiles
